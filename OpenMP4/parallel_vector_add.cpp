@@ -14,7 +14,7 @@ int main() {
     c[i] = a[i] + b[i];
 
   std::cout << std::endl << "Result:" << std::endl;
-  for(auto e : c)
+  for (auto e : c)
     std::cout << e << " ";
   std::cout << std::endl;
 }

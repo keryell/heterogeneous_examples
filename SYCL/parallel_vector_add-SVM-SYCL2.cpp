@@ -14,10 +14,7 @@ int main() {
   Vector c;
 
   // Enqueue a synchronous parallel kernel
-  cl::sycl::parallel_for<class vector_add>(cl::sycl::range<1> { N },
-                                           [=] (cl::sycl::id<1> index) {
-                                             c[index] = a[index] + b[index];
-                                           });
+  parallel_for<>(N, [=] (auto index) { c[index] = a[index] + b[index]; });
 
   std::cout << std::endl << "Result:" << std::endl;
   for(auto e : c)
