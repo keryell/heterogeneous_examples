@@ -13,6 +13,9 @@
 // 1 Mi elements
 #define N (2<<20)
 #define TYPE int
+// To inline constants in kernel source code string
+#define K_TYPE BOOST_PP_STRINGIZE(TYPE)
+#define K_N BOOST_PP_STRINGIZE(N)
 
 int main() {
   std::vector<TYPE> input(N);
@@ -32,9 +35,9 @@ int main() {
   // Construct an OpenCL program from the source string
   auto program = boost::compute::program::create_with_source(R"(
     __kernel void
-    simple_stream(const __global )" BOOST_PP_STRINGIZE(TYPE) R"( *ib,
-                  __global )" BOOST_PP_STRINGIZE(TYPE) R"( *ob) {
-          for (int i = 0; i != )" BOOST_PP_STRINGIZE(N) R"(; ++i)
+    simple_stream(const __global )" K_TYPE R"( *ib,
+                  __global )" K_TYPE R"( *ob) {
+          for (int i = 0; i != )" K_N R"(; ++i)
             ob[i] = ib[i] + 1;
     }
       )", boost::compute::system::default_context());
