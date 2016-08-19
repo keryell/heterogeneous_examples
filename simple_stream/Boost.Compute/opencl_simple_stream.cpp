@@ -5,7 +5,9 @@
 #include <boost/compute.hpp>
 #include <boost/preprocessor/stringize.hpp>
 #include <algorithm>
+#include <cstddef>
 #include <iostream>
+#include <stdexcept>
 #include <vector>
 
 constexpr size_t N = 3;
@@ -59,8 +61,7 @@ int main() {
   command_queue.enqueue_read_buffer(ob, 0 /* Offset */,
                                     N*sizeof(TYPE), output.data());
 
-  std::cout << std::endl << "Result:" << std::endl;
-  for(auto const &e : output)
-    std::cout << e << " ";
-  std::cout << std::endl;
+  for (std::size_t i = 0; i != N; ++i)
+    if (output[i] != input[i] + 1)
+      throw std::runtime_error { "Wrong result" };
 }
