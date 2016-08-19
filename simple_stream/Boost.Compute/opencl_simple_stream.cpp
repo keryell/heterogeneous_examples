@@ -10,7 +10,8 @@
 #include <stdexcept>
 #include <vector>
 
-constexpr size_t N = 3;
+// 1 Mi elements
+#define N (2<<20)
 #define TYPE int
 
 int main() {
@@ -30,11 +31,12 @@ int main() {
 
   // Construct an OpenCL program from the source string
   auto program = boost::compute::program::create_with_source(R"(
-  __kernel void
-  simple_stream(const __global )" BOOST_PP_STRINGIZE(TYPE) R"( *ib,
-                __global )" BOOST_PP_STRINGIZE(TYPE) R"( *ob) {
-        ob[get_global_id(0)] = ib[get_global_id(0)] + 1;
-      }
+    __kernel void
+    simple_stream(const __global )" BOOST_PP_STRINGIZE(TYPE) R"( *ib,
+                  __global )" BOOST_PP_STRINGIZE(TYPE) R"( *ob) {
+          for (int i = 0; i != )" BOOST_PP_STRINGIZE(N) R"(; ++i)
+            ob[i] = ib[i] + 1;
+    }
       )", boost::compute::system::default_context());
 
   program.build();
@@ -51,9 +53,9 @@ int main() {
   kernel.set_args(ib, ob);
 
   boost::compute::extents<1> offset { 0 };
-  boost::compute::extents<1> global { N };
-  // Use only 1 CU
-  boost::compute::extents<1> local { N };
+  // Use 1 work-group with 1 work-item
+  boost::compute::extents<1> global { 1 };
+  boost::compute::extents<1> local { 1 };
   // Launch the kernel
   command_queue.enqueue_nd_range_kernel(kernel, offset, global, local);
 
