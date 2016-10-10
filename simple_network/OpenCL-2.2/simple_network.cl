@@ -243,3 +243,13 @@ kernel void update_forward_table(cl::global_ptr<forward_t> new_table) {
   // Release the lock
   forward_lock.clear();
 }
+
+
+/* This dummy kernel is just here to force programm loading and
+   program-scope object initizalization when it is run.
+
+   The interesting side effect is starting the kernel graphs on the
+   accelerator
+*/
+kernel void force_init() {
+}
