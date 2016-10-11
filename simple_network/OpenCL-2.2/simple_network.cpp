@@ -70,13 +70,13 @@ int main() {
   boost::compute::buffer fb { context, sizeof(forward), CL_MEM_READ_ONLY };
   // The update_forward_table kernel will take this buffer
   update.set_args(fb);
- 
+
   for (; /* ever */ ;) {
     // Get some forwarding update from some external user interface...
     ux.update(forward);
     // Send the forwarding table top the accelerator
     command_queue.enqueue_write_buffer(fb, 0 /* Offset */,
-				       sizeof(forward), &forward);
+                                       sizeof(forward), &forward);
     /* Launch the update_forward_table kernel with 1 work-item to lock
        and update the table on the device */
     command_queue.enqueue_task(update);

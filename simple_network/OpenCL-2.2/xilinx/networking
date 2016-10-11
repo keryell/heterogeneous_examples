@@ -1,0 +1,19 @@
+/* Some Xilinx specific networking support
+ */
+
+#include <cstddef>
+
+namespace xlnx {
+namespace network {
+
+/* A minimal implementation just to compile
+ */
+class ethernet {
+
+public:
+
+  using address = std::size_t;
+};
+
+}
+}

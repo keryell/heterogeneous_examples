@@ -1,0 +1,19 @@
+/* Some Xilinx specific utility types
+ */
+
+#include <cstddef>
+
+namespace xlnx {
+namespace util {
+
+/* A minimal set implementation just to compile
+ */
+template <typename T, std::size_t MaxElements>
+class set {
+
+public:
+
+};
+
+}
+}

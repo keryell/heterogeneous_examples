@@ -21,6 +21,7 @@
    kernels to control the platform */
 #include <xilinx/interruption>
 #include <xilinx/networking>
+#include <xilinx/util>
 
 /* Start an asynchronous kernel without any argument on 1
    work-item from the device
