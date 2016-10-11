@@ -133,7 +133,7 @@ kernel void dispatch_interrupt() {
   xlnx::interrupt_descriptor i;
   for (; /* ever */ ;) {
     // Wait for the pipe controlled by the interrupt controller
-    waiting_read(interrupt_channel, i);
+    blocking_read(interrupt_channel, i);
     switch (i.source) {
     case xlnx::device::eth0:
       // Send a ready signal to eth0_receiver
@@ -164,7 +164,7 @@ kernel void eth0_receiver() {
     // Add some buffering code here for better buffer bloat :-)
     // [...]
     // Send a packet to the router
-    waiting_write(eth0_packet_channel, p);
+    blocking_write(eth0_packet_channel, p);
   }
 }
 
@@ -180,7 +180,7 @@ kernel void eth1_sender() {
     blocking_read(trigger_eth1_writing, unused);
     xlnx::ethernet::packet p;
     // Wait for a packet to forward
-    waiting_read(eth1_packet_channel, p);
+    blocking_read(eth1_packet_channel, p);
     /* Since we have been notified by interruption, we know the pipe
        to Ethernet is ready, so no need to wait */
     cl::make_pipe<cl::pipe_access::write>(raw_eth1_packet).write(p);
@@ -204,7 +204,7 @@ cl:: atomic_flag forward_lock = ATOMIC_FLAG_INIT;
 kernel void L2_router() {
   xlnx::ethernet::packet p;
   for (; /* ever */ ;) {
-    waiting_read(eth0_packet_channel, p);
+    blocking_read(eth0_packet_channel, p);
     /* If the packet is to be forwarded to eth1 according to the
        destination IEEE802 address, just do it!
 
@@ -219,7 +219,7 @@ kernel void L2_router() {
     forward_lock.clear();
     // Then do the real forwarding if required
     if (forward_p)
-      waiting_write(eth1_packet_channel, p);
+      blocking_write(eth1_packet_channel, p);
   }
 }
 
