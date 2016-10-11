@@ -31,9 +31,18 @@ int main() {
   // Create the OpenCL command queue to control the device
   auto command_queue = boost::compute::system::default_queue();
 
-  // Create a device default queue
-  // [...]
-  
+  /* Create a device default queue so a kernel can enqueue anther kernel.
+
+     Note that program-scope and static constructors are actually run
+     by an OpenCL run-time initializing kernel with 1 work-item, so
+     they can launch kernels.
+   */
+  boost::compute::command_queue dq { context,
+      command_queue.get_device(),
+      boost::compute::command_queue::enable_out_of_order_execution
+      | boost::compute::command_queue::on_device
+      | boost::compute::command_queue::on_device_default };
+
   /* Construct an OpenCL program from the source string
 
      Boost.Compute caches the binary, so on FPGA you pay the lengthy
