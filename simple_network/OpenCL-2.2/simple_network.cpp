@@ -6,6 +6,24 @@
 
 #include <boost/compute.hpp>
 #include <xilinx/networking>
+#include <xilinx/util>
+
+/* This is an imaginary user interface to command the system to be
+   implemented
+*/
+class user_interface {
+
+public:
+
+  template <typename T>
+  void update(T &forward) {
+    // [...] Update the forwarding table somehow...
+  }
+
+};
+
+user_interface ux;
+
 
 int main() {
   // Create the OpenCL context to attach resources on the device
