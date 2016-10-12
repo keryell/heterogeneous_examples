@@ -37,9 +37,9 @@
 struct start_kernel {
   template <typename Kernel>
   start_kernel(Kernel k) {
-    cl::get_default_device_queue().nqueue_kernel(cl::enqueue_policy::no_wait,
-                                                 { 1 },
-                                                 k);
+    cl::get_default_device_queue().enqueue_kernel(cl::enqueue_policy::no_wait,
+                                                  { 1 },
+                                                  k);
   }
 };
 
