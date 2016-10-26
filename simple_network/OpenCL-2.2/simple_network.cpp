@@ -31,7 +31,7 @@ int main() {
   // Create the OpenCL command queue to control the device
   auto command_queue = boost::compute::system::default_queue();
 
-  /* Create a device default queue so a kernel can enqueue anther kernel.
+  /* Create a device default queue so a kernel can enqueue another kernel.
 
      Note that program-scope and static constructors are actually run
      by an OpenCL run-time initializing kernel with 1 work-item, so
