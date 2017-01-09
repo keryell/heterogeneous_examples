@@ -23,25 +23,14 @@
 #include <xilinx/networking>
 #include <xilinx/util>
 
-/* Start an asynchronous kernel without any argument on 1
-   work-item from the device
+/* This dummy kernel is just here to force programm loading and
+   program-scope object initizalization when it is run.
 
-   The typical use case is to be used as a program scope variable to
-   start kernels.
-
-   This could be a trivial library from Khronos.
-
-   Assume cl::get_default_device_queue() is working out-of-the box or
-   that the host has already created it.
+   The interesting side effect is starting the kernel graphs on the
+   accelerator
 */
-struct start_kernel {
-  template <typename Kernel>
-  start_kernel(Kernel k) {
-    cl::get_default_device_queue().enqueue_kernel(cl::enqueue_policy::no_wait,
-                                                  { 1 },
-                                                  k);
-  }
-};
+kernel void force_init() {
+}
 
 
 // To read interrupt information from the interrupt controller
@@ -149,6 +138,27 @@ kernel void dispatch_interrupt() {
 }
 
 
+/* Start an asynchronous kernel without any argument on 1
+   work-item from the device
+
+   The typical use case is to be used as a program scope variable to
+   start kernels.
+
+   This could be a trivial library from Khronos.
+
+   Assume cl::get_default_device_queue() is working out-of-the box or
+   that the host has already created it.
+*/
+struct start_kernel {
+  template <typename Kernel>
+  start_kernel(Kernel k) {
+    cl::get_default_device_queue().enqueue_kernel(cl::enqueue_policy::no_wait,
+                                                  { 1 },
+                                                  k);
+  }
+};
+
+
 // Start dispatch_interrupt at program level to listen to the interrupts
 start_kernel launch_interrupt_dispatcher { dispatch_interrupt };
 
@@ -243,14 +253,4 @@ kernel void update_forward_table(cl::global_ptr<forward_t> new_table) {
   forward = *new_table;
   // Release the lock
   forward_lock.clear();
-}
-
-
-/* This dummy kernel is just here to force programm loading and
-   program-scope object initizalization when it is run.
-
-   The interesting side effect is starting the kernel graphs on the
-   accelerator
-*/
-kernel void force_init() {
 }
