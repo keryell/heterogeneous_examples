@@ -37,4 +37,4 @@ endif
 all: $(TARGETS) $(TARGETS).xclbin
 
 clean:
-	$(RM) $(TARGETS)
+	$(RM) $(TARGETS) $(TARGETS).xclbin
