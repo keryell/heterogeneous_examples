@@ -21,6 +21,11 @@ ifdef OpenCL_LIBPATH
   LDFLAGS += -L$(OpenCL_LIBPATH)
 endif
 
+CXXFLAGS += -v -static-libstdc++ -static-libgcc -static -fvisibility=hidden
+#CXXFLAGS += -v -shared- fvisibility=hidden
+#http://stackoverflow.com/questions/836875/creating-library-with-backward-compatible-abi-that-uses-boost
+
+lib: $(TARGETS).a($(TARGETS).o) $(TARGETS).a(/usr/lib/gcc/x86_64-linux-gnu/6/libstdc++.a)
 
 all: $(TARGETS) vector_add.spv vector_add.spv-text
 
