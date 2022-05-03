@@ -1,4 +1,4 @@
-TARGETS = opencl_simple_stream
+TARGETS = opencl_simple_stream opencl_simple_stream_async
 CXXFLAGS = -Wall -std=c++1y -g -I../../include \
 	-DBOOST_COMPUTE_DEBUG_KERNEL_COMPILATION \
 	-DBOOST_COMPUTE_HAVE_THREAD_LOCAL \
