@@ -1,4 +1,4 @@
-TARGETS = opencl_vector_add
+TARGETS = opencl_vector_add opencl_vector_add_gpu
 CXXFLAGS = -Wall -std=c++1y -g -I../../include \
 	-DBOOST_COMPUTE_DEBUG_KERNEL_COMPILATION \
 	-DBOOST_COMPUTE_HAVE_THREAD_LOCAL \
