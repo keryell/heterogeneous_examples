@@ -1,10 +1,10 @@
 # To use the DPC++ compiler:
-SYCL_HOME=~/Xilinx/Projects/LLVM/worktrees/xilinx
-export LD_LIBRARY_PATH=$SYCL_HOME/llvm/build/lib:$LD_LIBRARY_PATH
+#SYCL_HOME=~/Xilinx/Projects/LLVM/worktrees/xilinx
+#export LD_LIBRARY_PATH=$SYCL_HOME/llvm/build/lib:$LD_LIBRARY_PATH
 
 TARGETS = vector_add_XRT_interoperability
 
-CXXFLAGS = -Wall -std=c++2b -g -g3 -fsycl -fsycl-targets=fpga64_hls_hw_emu \
+CXXFLAGS = -std=c++20 \
   -I/opt/xilinx/xrt/include -L/opt/xilinx/xrt/lib -lOpenCL -luuid -lxrt_coreutil
 
 LDLIBS =
@@ -25,7 +25,9 @@ ifdef OpenCL_LIBPATH
 endif
 
 vector_add_XRT_interoperability: vector_add_XRT_interoperability.cpp
-	$(SYCL_HOME)/llvm/build/bin/clang++ $(CXXFLAGS) -fsycl $< -o $@
+	$(SYCL_HOME)/llvm/build/bin/clang++ \
+	-fsycl -fsycl-targets=fpga64_hls_hw_emu $(CXXFLAGS) \
+	$< -o $@
 
 all: $(TARGETS)
 
