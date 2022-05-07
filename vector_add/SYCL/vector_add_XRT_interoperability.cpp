@@ -1,3 +1,12 @@
+// Run with for example
+// XCL_EMULATION_MODE=hw_emu SYCL_DEVICE_FILTER=xrt:acc:0
+// ./vector_add_XRT_interoperability
+
+// The kernel code from
+// https://github.com/Xilinx/Vitis_Accel_Examples/blob/master/host_xrt/hello_world_xrt/src/vadd.cpp
+// has to be compiled separately
+
+#include <cassert>
 #include <sycl/sycl.hpp>
 #include <sycl/ext/xilinx/xrt.hpp>
 #include <xrt.h>
@@ -6,11 +15,6 @@
 constexpr int size = 4;
 
 int main() {
-  sycl::queue q;
-  xrt::device xdev = sycl::get_native<sycl::backend::xrt>(q.get_device());
-  xrt::kernel xk { xdev, xdev.load_xclbin("vadd.hw_emu.xclbin"), "vadd" };
-  sycl::kernel k{sycl::make_kernel<sycl::backend::xrt>(xk, q.get_context())};
-
   sycl::buffer<int> a { size };
   sycl::buffer<int> b { size };
   sycl::buffer<int> c { size };
@@ -20,9 +24,14 @@ int main() {
     sycl::host_accessor a_b { b };
     for (int i = 0; i < size; ++i) {
       a_a[i] = i;
-      a_b[i] = i + 1;
+      a_b[i] = i + 42;
     }
   }
+
+  sycl::queue q;
+  xrt::device xdev = sycl::get_native<sycl::backend::xrt>(q.get_device());
+  xrt::kernel xk { xdev, xdev.load_xclbin("vadd.hw_emu.xclbin"), "vadd" };
+  sycl::kernel k { sycl::make_kernel<sycl::backend::xrt>(xk, q.get_context()) };
 
   q.submit([&](sycl::handler& cgh) {
     cgh.set_args(sycl::accessor { a, cgh, sycl::read_only },
@@ -31,6 +40,7 @@ int main() {
                  size);
     cgh.single_task(k);
   });
+
   {
     sycl::host_accessor a_a { a };
     sycl::host_accessor a_b { b };
